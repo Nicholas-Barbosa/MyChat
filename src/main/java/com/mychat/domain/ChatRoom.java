@@ -1,7 +1,11 @@
 package com.mychat.domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import com.mychat.websocket.message.ChatMessage;
 
 public class ChatRoom implements Comparable<ChatRoom> {
 
@@ -10,6 +14,7 @@ public class ChatRoom implements Comparable<ChatRoom> {
 	private String name;
 	private Set<ChatUser> users;
 	private ChatUser createdBy;
+	private List<ChatMessage> messages;
 
 	public ChatRoom(String id, String name, Set<ChatUser> users, ChatUser createdBy) {
 		super();
@@ -18,6 +23,7 @@ public class ChatRoom implements Comparable<ChatRoom> {
 		this.name = name;
 		this.users = users;
 		users.stream().forEach(this::addUser);
+		this.messages = new CopyOnWriteArrayList<>();
 	}
 
 	public void setId(String id) {
@@ -45,15 +51,22 @@ public class ChatRoom implements Comparable<ChatRoom> {
 	}
 
 	public final boolean addUser(ChatUser user) {
-		return this.users.stream().filter(u -> u.equals(user)).findAny().get().addChatRoom(this)
+		return user.addChatRoom(this)
 				&& this.users.add(user);
 	}
 
 	public final boolean removeUser(ChatUser user) {
-		return this.users.stream().filter(u -> u.equals(user)).findAny().get().removeChatRoom(this)
+		return user.removeChatRoom(this)
 				&& this.users.remove(user);
 	}
 
+	public boolean addMessage(ChatMessage message) {
+		return this.messages.add(message);
+	}
+
+	public List<ChatMessage> getMessages() {
+		return messages;
+	}
 	@Override
 	public int compareTo(ChatRoom o) {
 		// TODO Auto-generated method stub

@@ -1,0 +1,53 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	template="/WEB-INF/template.xhtml">
+
+	<ui:define name="head">
+		<h:outputScript name="chatEndpoint.js" library="javascript" />
+	</ui:define>
+
+	<ui:define name="title">Chat room</ui:define>
+
+	<ui:define name="viewname">
+		<li><p:link outcome="/faces/room">Chat room</p:link></li>
+	</ui:define>
+
+	<ui:define name="content">
+		<div class="card">
+			<h5>Conectar a sala</h5>
+			<h:form>
+				<div class="ui-fluid">
+					<div class="p-field">
+						<label for="lastname">ROOM ID</label>
+						<p:inputText id="lastname" type="text" />
+					</div>
+					<p:commandButton type="button" value="Conectar"
+						styleClass="ui-button-raised ui-button-success"
+						icon="pi pi-arrow-right" iconPos="right" process="@form" />
+				</div>
+			</h:form>
+		</div>
+		<div class="card chat" style="display: none">
+			<div class="chat-content" id="messagesContainer"></div>
+			<div class="chat-input">
+				<p:inputText placeholder="Type your message..." />
+				<div class="input-buttons">
+					<p:commandButton type="button" icon="pi pi-heart"
+						styleClass="ui-button-secondary outlined-button p-mr-2"
+						onclick="connect('katia.justo')" />
+					<p:commandButton type="button" icon="pi pi-paperclip"
+						styleClass="ui-button-secondary outlined-button p-mr-2" />
+					<p:commandButton type="button" icon="pi pi-reply"
+						styleClass="ui-button-success p-mr-2"
+						onclick="addDivMessage('Olá caralho!')" />
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

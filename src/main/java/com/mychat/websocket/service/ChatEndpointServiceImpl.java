@@ -1,66 +1,93 @@
 package com.mychat.websocket.service;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.mychat.domain.ChatRoom;
 import com.mychat.domain.ChatUser;
 import com.mychat.service.ChatRoomService;
-import com.mychat.websocket.utils.MessageSenderUtils;
+import com.mychat.websocket.message.ChatMessage;
+import com.mychat.websocket.message.MessageType;
+import com.mychat.websocket.utils.SessionUtils;
 
 @ApplicationScoped
 public class ChatEndpointServiceImpl implements ChatEndpointService {
 
-	private final Map<ChatUser, List<String>> incomingOfflineMessages = new ConcurrentHashMap<>();
-
 	@Inject
 	private ChatRoomService chatRoomService;
 
-	@Override
-	public void broadcastToRoom(String message, ChatUser fromUser) {
-		int indexOf = message.indexOf(";");
-		String roomId = message.substring(5, indexOf);
-		chatRoomService.findById(roomId).ifPresentOrElse(room -> {
-			room.getUsers().parallelStream().filter(user -> !user.equals(fromUser)).forEach(user -> {
-				String formatedMessage = new StringBuilder(fromUser.getUsername() + ":")
-						.append(message.substring(message.indexOf(";") + 1)).toString();
+	private Set<ChatUser> broadcastWelcomeMessageIfUserIsNotPresentInRoom(ChatRoom room, ChatUser user) {
+		Set<ChatUser> users = room.getUsers();
 
-				if (user.getCurrentSession() == null) {
-					this.saveIncomingMessage(user, formatedMessage);
-					System.out.println("salvando mensagem pois " + user.getUsername() + " esta offline!");
-					return;
-				}
-				MessageSenderUtils.sendMessage(formatedMessage, user.getCurrentSession());
+		if (users.add(user)) {
+			ChatMessage messageToUsersInRoom = new ChatMessage("Server", user.getUsername() + " entrou na sala!",
+					room.getId(), MessageType.NORMAL);
+			users.stream().filter(chatUser -> chatUser.getCurrentSession() != null).forEach(chatUser -> {
+				SessionUtils.sendAsyncMessage(messageToUsersInRoom, chatUser.getCurrentSession());
+				room.addUser(user);
+				room.addMessage(messageToUsersInRoom);
 			});
+		}
+
+		return users;
+	}
+
+	@Override
+	public void broadcastToRoom(ChatMessage message, ChatUser fromUser) {
+		String roomId = message.getRoomId();
+		message.setAuthor(fromUser.getUsername());
+		chatRoomService.findById(roomId).ifPresentOrElse(room -> {
+			this.broadcastWelcomeMessageIfUserIsNotPresentInRoom(room, fromUser).parallelStream()
+					.filter(user -> !user.equals(fromUser) && user.getCurrentSession() != null).forEach(user -> {
+						SessionUtils.sendMessage(message, user.getCurrentSession());
+						room.addMessage(message);
+					});
 		}, () -> {
 
-			MessageSenderUtils.sendMessage("Grupo ID " + roomId + " não existe!", fromUser.getCurrentSession());
+			SessionUtils.sendMessage(
+					new ChatMessage("Room ID " + roomId + " não existe!", message.getRoomId(), MessageType.NORMAL),
+					fromUser.getCurrentSession());
 		});
 
 	}
 
 	@Override
-	public void flushIncomingOfflineMessages(ChatUser toUser) {
-		if (incomingOfflineMessages.containsKey(toUser)) {
-			incomingOfflineMessages.get(toUser).parallelStream().forEach(message -> {
-				MessageSenderUtils.sendMessage(message, toUser.getCurrentSession());
+	public void flushAllChatMessages(ChatUser toUser, String roomId) {
+		toUser.getRooms().stream().filter(room -> room.getId().equals(roomId)).findAny().ifPresent(room -> {
+			room.getMessages().parallelStream().forEach(message -> {
+				SessionUtils.sendMessage(message, toUser.getCurrentSession());
 			});
-			incomingOfflineMessages.remove(toUser);
-		}
-
+		});
 	}
 
-	private void saveIncomingMessage(ChatUser user, String message) {
-		if (incomingOfflineMessages.containsKey(user)) {
-			List<String> messages = incomingOfflineMessages.get(user);
-			messages.add(message);
-			return;
+	@Override
+	public void onMessage(ChatMessage message, ChatUser user) {
+		// TODO Auto-generated method stub
+		switch (message.getType()) {
+		case NORMAL:
+			broadcastToRoom(message, user);
+			break;
+		case RECEIVE_OLD_MESSAGES:
+			this.flushAllChatMessages(user, message.getRoomId());
+
+			break;
+		case CLOSING:
+			break;
 		}
-		incomingOfflineMessages.put(user, Arrays.asList(message));
+	}
+
+	@Override
+	public void broadcastMembershipMessage(ChatMessage message, ChatUser newUser) {
+		// TODO Auto-generated method stub
+		chatRoomService.findById(message.getRoomId()).ifPresent(room -> {
+			room.getUsers().parallelStream().forEach(user -> {
+				SessionUtils.sendMessage(message, user.getCurrentSession());
+			});
+			room.addUser(newUser);
+		});
+
 	}
 
 }

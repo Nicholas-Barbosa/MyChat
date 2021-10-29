@@ -28,6 +28,9 @@ public class ChatUser implements Comparable<ChatUser> {
 		return createdAt;
 	}
 
+	public Set<ChatRoom> getRooms() {
+		return rooms;
+	}
 	public boolean addChatRoom(ChatRoom chat) {
 		this.instantiateRooms();
 		return rooms.add(chat);
