@@ -26,10 +26,12 @@ public class ChatUserDataBootstrapper {
 		System.out.println("Saving chat users and chat room...");
 		ChatUser nicholas = new ChatUser("nicholas.justo", null);
 		ChatUser katia = new ChatUser("katia.justo", null);
-
+		ChatUser paulo = new ChatUser("paulo", null);
+		
 		chatUserRepository.persist(nicholas);
 		chatUserRepository.persist(katia);
-
+		chatUserRepository.persist(paulo);
+		
 		ChatRoom room = new ChatRoom(null, "Chat do nicholas", new HashSet<ChatUser>(Set.of(nicholas)),
 				nicholas);
 		roomRepository.persist(room);

@@ -55,6 +55,8 @@ public class ChatEndpoint {
 
 	@OnClose
 	public void myOnClose(CloseReason reason) throws IOException {
+		System.out.println("onClose! ");
+		System.out.println(reason);
 		if (currentUser != null)
 			this.currentUser.setCurrentSession(null);
 
