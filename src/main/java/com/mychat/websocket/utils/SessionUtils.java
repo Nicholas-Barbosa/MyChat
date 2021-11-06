@@ -8,7 +8,6 @@ import javax.websocket.RemoteEndpoint.Async;
 import javax.websocket.RemoteEndpoint.Basic;
 import javax.websocket.Session;
 
-import com.mychat.domain.ChatUser;
 import com.mychat.websocket.message.ChatMessage;
 
 public class SessionUtils {
@@ -28,9 +27,7 @@ public class SessionUtils {
 		asyncRemote.sendObject(message);
 	}
 	
-	public static void closeSession(ChatUser user, CloseReason reason) {
-		closeSession(user.getCurrentSession(), reason);
-	}
+
 	
 	public static void closeSession(Session session, CloseReason reason) {
 		try {

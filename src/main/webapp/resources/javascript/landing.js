@@ -5,7 +5,7 @@ var chatUsername;
 const styleForIncomingMessages = "chat-message"
 const styleForSendMessages = "chat-message send"
 var chatEndpoint;
-
+var currentRoom;
 function connect() {
 	$("#messages").hide();
 	chatEndpoint = new WebSocket("ws://192.168.100.7:8080/MyChat/chat/" + chatUsername);
