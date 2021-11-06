@@ -39,8 +39,9 @@ public class ChatEndpointServiceImpl implements ChatEndpointService {
 
 	@Override
 	public void removeActiveSession(Session session) {
-		sessions.remove(session);
-
+		if (session != null && sessions.containsValue(session)) {
+			sessions.entrySet().removeIf(entry -> entry.getValue().equals(session));
+		}
 	}
 
 }
