@@ -26,12 +26,14 @@ public class ChatEndpoint {
 
 	@OnOpen
 	public void onOpen(Session session, @PathParam("email") String email) throws IOException {
-		service.addActiveSession(email,session);
+		service.addActiveSession(email, session);
 		this.currentSession = session;
 	}
 
 	@OnMessage
 	public void myOnMessage(ChatMessage message) {
+//		message.setFrom(currentSession.getUser());
+		service.onmessage(currentSession, message);
 
 	}
 

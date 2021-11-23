@@ -25,177 +25,85 @@
 					action="#{chatController.getChatUsername()}"
 					oncomplete="chatUsername = args.chatUsername" autoRun="true" />
 				<p:remoteCommand name="getAllRooms" autoRun="true" async="true"
-					action="#{chatController.getAllRooms}" update="form-rooms" />
+					action="#{chatController.getAllRooms}" />
 			</h:form>
-		</div>
-		<div class="card" id="connectToRoom">
-			<h5>Conectar a sala</h5>
-			<h:form>
-				<div class="ui-fluid">
-					<div class="p-field">
-						<label for="roomId">ROOM ID</label>
-						<p:inputText id="roomId" type="text"
-							value="#{chatController.roomId}" />
-					</div>
+			<div class="layout-widgets">
+				<div class="p-grid">
+					<div class="p-col-12 p-md-12 p-xl-4">
+						<div class="card">
+							<h6>Conversas</h6>
 
-
-					<div class="p-grid">
-						<div class="p-col">
-							<p:commandButton value="Conectar" styleClass="ui-button-raised"
-								icon="pi pi-arrow-right" iconPos="right" process="@form"
-								action="#{chatController.checkRoomId}"
-								oncomplete="checkRoomExists(xhr)" />
-						</div>
-						<div class="p-col">
-							<p:commandButton type="button" value="Criar sala"
-								styleClass="ui-button-raised ui-button-success" iconPos="right"
-								process="@form" onclick="PF('dlgNewRoom').show()" />
 						</div>
 					</div>
-
-				</div>
-			</h:form>
-		</div>
-		<div class="card chat" style="display: none" id="messages">
-			<div class="alert alert-success" role="alert">
-				<h5 jsf:id="roomName">#{chatController.room.name.toUpperCase()}
-					- ID#{chatController.room.id}</h5>
-			</div>
-
-			<div class="chat-content" id="messagesContainer"></div>
-			<div class="chat-input">
-				<p:inputText placeholder="Type your message..." id="message"
-					name="message" />
-				<p:inputText type="hidden" id="roomId" name="roomId"
-					value="#{chatController.room.id}" />
-
-				<div class="input-buttons">
-					<p:button icon="pi pi-reply" styleClass="ui-button-success p-mr-2"
-						onclick="sendMessage(document.getElementById('message').value,document.getElementById('roomId').value);" />
-
-				</div>
-			</div>
-		</div>
-
-		<div class="card">
-			<h5 jsf:value="Salas2">Salas</h5>
-			<p:splitter style="height: 300px" styleClass="p-mb-5">
-				<p:splitterPanel styleClass="p-d-flex p-ai-center p-jc-center"
-					size="2">
-					<div class="actions">
-						<div class="action-buttons">
-							<div class="p-grid p-flex-column">
-								<h:form id="form-rooms">
-									<p:remoteCommand name="setSelectedRoom" process="@this"
-										action="#{chatController.setSelectedRoom}" />
-									<p:repeat var="room" value="#{chatController.rooms}">
-										<div class="p-col"
-											onclick="currentRoom = #{room.id};setSelectedRoom([{name:'room',value:#{room.id}}])">
-											<div class="action box">
-												<span><i class="pi pi-comments"></i>#{room.name} </span>
-											</div>
-										</div>
-									</p:repeat>
-
-									<div class="p-col" onclick="PF('dlgNewRoom').show()">
-										<div class="action">
-											<span><i class="pi pi-plus-circle"></i>Criar sala</span>
-										</div>
+					<div class="p-col-12 p-md-12 p-xl-8">
+						<div class="card chat">
+							<div class="card-header">
+								<h5>Chat</h5>
+								<div class="header-buttons">
+									<p:commandButton type="button" icon="pi pi-search"
+										styleClass="ui-button-secondary outlined-button p-mr-2" />
+									<p:commandButton type="button" icon="pi pi-users"
+										styleClass="ui-button-secondary outlined-button  p-mr-2" />
+									<p:commandButton type="button" icon="pi pi-ellipsis-v"
+										styleClass="ui-button-secondary outlined-button " />
+								</div>
+							</div>
+							<div class="chat-content">
+								<div class="chat-message">
+									<p:graphicImage name="images/dashboard/avatar-message-1.png"
+										library="demo" />
+									<div class="message">
+										<p>The analysis of satellite data has revealed the
+											astounding loss of ice in just a few months of abnormally
+											high...</p>
+										<span>3 mins ago</span>
 									</div>
-								</h:form>
+								</div>
+								<div class="chat-message">
+									<p:graphicImage name="images/dashboard/avatar-message-2.png"
+										library="demo" />
+									<div class="message">
+										<p>Last year was the hottest on record for the Arctic,
+											with the annual.</p>
+										<span>23 mins ago</span>
+									</div>
+								</div>
+								<div class="chat-message send">
+									<p:graphicImage name="images/dashboard/avatar-message-3.png"
+										library="demo" />
+									<div class="message">
+										<p>Minimum extent of sea ice in the region its
+											second-lowest on record.</p>
+										<span>24 mins ago</span>
+									</div>
+								</div>
+								<div class="chat-message">
+									<p:graphicImage name="images/dashboard/avatar-message-4.png"
+										library="demo" />
+									<div class="message">
+										<p>Right… Right my friend. This is better. Right? Right my
+											friend… 🏄‍♂️</p>
+										<span>25 mins ago</span>
+									</div>
+								</div>
+							</div>
+							<div class="chat-input">
+								<p:inputText placeholder="Type your message..." />
+								<div class="input-buttons">
+									<p:commandButton type="button" icon="pi pi-heart"
+										styleClass="ui-button-secondary outlined-button p-mr-2" />
+									<p:commandButton type="button" icon="pi pi-paperclip"
+										styleClass="ui-button-secondary outlined-button p-mr-2" />
+									<p:commandButton type="button" icon="pi pi-reply"
+										styleClass="ui-button-success p-mr-2" />
+								</div>
 							</div>
 						</div>
 					</div>
 
-				</p:splitterPanel>
-				<p:splitterPanel styleClass="p-d-flex p-ai-center p-jc-center">
-					<div class="card chat">
-						<div class="card-header">
-							<h5>Chat</h5>
-							<div class="header-buttons">
-								<p:commandButton type="button" icon="pi pi-search"
-									styleClass="ui-button-secondary outlined-button p-mr-2" />
-								<p:commandButton type="button" icon="pi pi-users"
-									styleClass="ui-button-secondary outlined-button  p-mr-2" />
-								<p:commandButton type="button" icon="pi pi-ellipsis-v"
-									styleClass="ui-button-secondary outlined-button " />
-							</div>
-						</div>
-						<div class="chat-content">
-							<div class="chat-message">
-								<p:graphicImage name="images/dashboard/avatar-message-1.png"
-									library="demo" />
-								<div class="message">
-									<p>The analysis of satellite data has revealed the
-										astounding loss of ice in just a few months of abnormally
-										high...</p>
-									<span>3 mins ago</span>
-								</div>
-							</div>
-							<div class="chat-message">
-								<p:graphicImage name="images/dashboard/avatar-message-2.png"
-									library="demo" />
-								<div class="message">
-									<p>Last year was the hottest on record for the Arctic, with
-										the annual.</p>
-									<span>23 mins ago</span>
-								</div>
-							</div>
-							<div class="chat-message send">
-								<p:graphicImage name="images/dashboard/avatar-message-3.png"
-									library="demo" />
-								<div class="message">
-									<p>Minimum extent of sea ice in the region its
-										second-lowest on record.</p>
-									<span>24 mins ago</span>
-								</div>
-							</div>
-							<div class="chat-message">
-								<p:graphicImage name="images/dashboard/avatar-message-4.png"
-									library="demo" />
-								<div class="message">
-									<p>Right… Right my friend. This is better. Right? Right my
-										friend… 🏄‍♂️</p>
-									<span>25 mins ago</span>
-								</div>
-							</div>
-						</div>
-						<div class="chat-input">
-							<p:inputText placeholder="Type your message..." />
-							<div class="input-buttons">
-								<p:commandButton type="button" icon="pi pi-heart"
-									styleClass="ui-button-secondary outlined-button p-mr-2" />
-								<p:commandButton type="button" icon="pi pi-paperclip"
-									styleClass="ui-button-secondary outlined-button p-mr-2" />
-								<p:commandButton type="button" icon="pi pi-reply"
-									styleClass="ui-button-success p-mr-2" />
-							</div>
-						</div>
-					</div>
-				</p:splitterPanel>
-			</p:splitter>
-		</div>
-
-		<p:dialog header="Nova sala" modal="true" responsive="true"
-			widgetVar="dlgNewRoom">
-			<div>
-				<h:form>
-					<div class="p-formgroup-inline">
-						<div class="p-field">
-							<label for="roomName" class="p-sr-only">Nome da sala</label>
-							<p:inputText id="roomName" type="text" placeholder="Nome da sala"
-								value="#{chatController.newChatRoomDTO.name}" />
-						</div>
-
-						<p:commandButton value="Criar" process="@form"
-							action="#{chatController.createRoom}"
-							oncomplete="PF('dlgNewRoom').hide();checkRoomExists(xhr)"
-							update=":roomName,:roomId" />
-					</div>
-
-				</h:form>
+				</div>
 			</div>
-		</p:dialog>
+		</div>
 	</ui:define>
 
 </ui:composition>

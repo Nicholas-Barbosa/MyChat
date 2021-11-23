@@ -7,48 +7,42 @@ import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbDateFormat;
 import javax.json.bind.annotation.JsonbProperty;
 
+import com.mychat.domain.User;
+
 public class ChatMessage implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 7655905362519242283L;
-	private String author;
-	private String content;
-	private String roomId;
+	private String content, roomId;
+	private User from;
 	private MessageType type;
 	private LocalDateTime sendAt;
 
 	@JsonbCreator
 	public ChatMessage(@JsonbProperty("content") String content, @JsonbProperty("roomId") String roomId,
-			@JsonbProperty("type") MessageType type,
 			@JsonbProperty("send_at") @JsonbDateFormat("yyyy-MM-dd'T'HH:mm:ss") LocalDateTime sendAt) {
 		super();
 		this.content = content;
 		this.roomId = roomId;
-		this.type = type;
 		this.sendAt = sendAt;
 	}
 
-	public ChatMessage(String author, String content, String roomId, MessageType type, LocalDateTime sendAt) {
-		super();
-		this.author = author;
-		this.content = content;
-		this.roomId = roomId;
-		this.type = type;
-		this.sendAt = sendAt;
-	}
-
-	public String getAuthor() {
-		return author;
-	}
-
-	public void setAuthor(String author) {
-		this.author = author;
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 	public String getContent() {
 		return content;
+	}
+
+	public User getFrom() {
+		return from;
+	}
+
+	public void setFrom(User from) {
+		this.from = from;
 	}
 
 	public String getRoomId() {
@@ -63,13 +57,10 @@ public class ChatMessage implements Serializable {
 		return sendAt;
 	}
 
-	public void setSendAt(LocalDateTime sendAt) {
-		this.sendAt = sendAt;
-	}
-
 	@Override
 	public String toString() {
-		return "ChatMessage [author=" + author + ", content=" + content + ", roomId=" + roomId + ", type=" + type + "]";
+		return "ChatMessage [content=" + content + ", roomId=" + roomId + ", from=" + from + ", type=" + type
+				+ ", sendAt=" + sendAt + "]";
 	}
 
 }

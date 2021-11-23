@@ -7,43 +7,27 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class Message extends BaseEntity{
+public class Message extends BaseEntity {
 
-	@Column(length = 200,nullable = false)
+	@Column(length = 200, nullable = false)
 	private String content;
 	@Column(nullable = false)
 	private LocalDateTime sendAt;
 	@ManyToOne
 	private User from;
 	@ManyToOne
-	private User to;
-	
+	private ChatRoom room;
+
 	public Message() {
 		// TODO Auto-generated constructor stub
 	}
-	
-	public Message(String content, User from, User to) {
+
+	public Message(String content, LocalDateTime sendAt, User from, ChatRoom room) {
 		super();
 		this.content = content;
-		this.sendAt = LocalDateTime.now();
+		this.sendAt = sendAt;
 		this.from = from;
-		this.to = to;
-	}
-
-	public User getFrom() {
-		return from;
-	}
-
-	public void setFrom(User from) {
-		this.from = from;
-	}
-
-	public User getTo() {
-		return to;
-	}
-
-	public void setTo(User to) {
-		this.to = to;
+		this.room = room;
 	}
 
 	public String getContent() {
@@ -53,6 +37,13 @@ public class Message extends BaseEntity{
 	public LocalDateTime getSendAt() {
 		return sendAt;
 	}
-	
-	
+
+	public User getFrom() {
+		return from;
+	}
+
+	public ChatRoom getRoom() {
+		return room;
+	}
+
 }

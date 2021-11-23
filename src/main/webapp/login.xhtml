@@ -25,18 +25,34 @@
 	</div>
 	<div class="login-card">
 		<h1>
-			RAIN<span>LOGIN</span>
+			MyChat<span>LOGIN</span>
 		</h1>
 		<span>Welcome, please use the form to sign-in <br />MyChat
+			network
 		</span>
 		<h:form>
 			<div class="form-group">
-				<span>Username</span>
-				<p:inputText placeholder="name@example.com" required="true"
-					value="#{loginController.username}" />
+				<span>Email</span>
+				<p:inputText placeholder="name@example.com"
+					value="#{loginController.email}" required="true" id="email" />
 			</div>
-			<p:commandButton value="Entrar" action="#{loginController.doLogin}"
-				process="@form" />
+			<div class="form-group">
+				<span>Password</span>
+				<p:password placeholder="write your password..."
+					value="#{loginController.password}" required="true" id="password" />
+			</div>
+
+			<p:commandButton value="Entrar" action="#{loginController.login}"
+				process="@form:email,@form:password" />
+
+			<div class="form-footer">
+				<div class="checkbox">
+					<span>Remember Me</span>
+					<p:selectBooleanCheckbox />
+				</div>
+				<a href="#">Forget Password?</a>
+			</div>
+
 		</h:form>
 	</div>
 	<h:outputStylesheet name="css/#{stylePreferencesController.layout}.css"
